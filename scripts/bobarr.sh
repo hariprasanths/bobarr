@@ -28,7 +28,7 @@ after_start() {
   echo "you can close this and bobarr will continue to run in backgound"
   echo ""
   docker-compose logs -f api
-}
+} 
 
 if [[ $args == 'start' ]]; then
   stop_bobarr
