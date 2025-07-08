@@ -5,8 +5,8 @@ volumes:
   api_build:
   api_node_modules:
   web_node_modules:
-  db_data:
-  redis_data:
+  db_data_jul_2025:
+  redis_data_jul_2025:
 
 networks:
   default:
@@ -45,7 +45,7 @@ services:
     env_file: .env
     restart: unless-stopped
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data_jul_2025:/var/lib/postgresql/data
 
   redis:
     container_name: bobarr-redis
@@ -53,7 +53,7 @@ services:
     env_file: .env
     restart: unless-stopped
     volumes:
-      - /home/ezio/bobarr/packages/redis_data:/data
+      - redis_data_jul_2025:/data
 
   jackett:
     image: linuxserver/jackett

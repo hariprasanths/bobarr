@@ -65,6 +65,9 @@ export class OrganizeProcessor {
     job: Job<{ movieId: number }>,
     @TransactionManager() manager?: EntityManager
   ) {
+
+    try {
+
     const { movieId } = job.data;
 
     const movieDAO = manager!.getCustomRepository(MovieDAO);
@@ -139,7 +142,7 @@ export class OrganizeProcessor {
         oneLine`
             cd "${newFolder}" &&
             ${this.getOrganizeStrategyCommand(organizeStrategy)}
-              "../../downloads/complete/${torrentFile.original}"
+              "/downloads/complete/${torrentFile.original}"
               "${torrentFile.next}"
           `
       );
@@ -161,6 +164,11 @@ export class OrganizeProcessor {
     });
 
     this.logger.info('finish rename and link movie', { movieId });
+    } catch (error) {
+      this.logger.info('rename and link error', { error });
+      // not handled error, throw
+      throw error;
+    }
   }
 
   @Process(OrganizeQueueProcessors.HANDLE_EPISODE)
@@ -169,6 +177,8 @@ export class OrganizeProcessor {
     job: Job<{ episodeId: number }>,
     @TransactionManager() manager?: EntityManager
   ) {
+    try {
+
     const { episodeId } = job.data;
 
     const tvEpisodeDAO = manager!.getCustomRepository(TVEpisodeDAO);
@@ -227,7 +237,7 @@ export class OrganizeProcessor {
         oneLine`
           cd "${seasonFolder}" &&
           ${this.getOrganizeStrategyCommand(organizeStrategy)}
-            "../../../downloads/complete/${torrentFile.original}"
+            "/downloads/complete/${torrentFile.original}"
             "${torrentFile.next}"
         `
       );
@@ -249,6 +259,11 @@ export class OrganizeProcessor {
     });
 
     this.logger.info('finish rename and link episode', { episodeId });
+    } catch (error) {
+      this.logger.info('rename and link error', { error });
+      // not handled error, throw
+      throw error;
+    }
   }
 
   @Process(OrganizeQueueProcessors.HANDLE_SEASON)
@@ -257,6 +272,7 @@ export class OrganizeProcessor {
     job: Job<{ seasonId: number }>,
     @TransactionManager() manager?: EntityManager
   ) {
+    try {
     const { seasonId } = job.data;
 
     const tvSeasonDAO = manager!.getCustomRepository(TVSeasonDAO);
@@ -354,7 +370,7 @@ export class OrganizeProcessor {
         oneLine`
           cd "${seasonFolder}" &&
           ${this.getOrganizeStrategyCommand(organizeStrategy)}
-          "../../../downloads/complete/${file.original}"
+          "/downloads/complete/${file.original}"
           "${newName}${file.ext}"
         `
       );
@@ -407,5 +423,10 @@ export class OrganizeProcessor {
     });
 
     this.logger.info('finsh rename and link season', { seasonId });
+    } catch (error) {
+      this.logger.info('rename and link error', { error });
+      // not handled error, throw
+      throw error;
+    }
   }
 }
