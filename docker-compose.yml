@@ -52,6 +52,7 @@ services:
   jackett:
     image: linuxserver/jackett
     container_name: bobarr-jacket
+    init: false
     env_file: .env
     restart: unless-stopped
     volumes:
@@ -72,6 +73,7 @@ services:
   transmission:
     image: linuxserver/transmission
     container_name: bobarr-transmission
+    init: false
     env_file: .env
     restart: unless-stopped
     volumes:
