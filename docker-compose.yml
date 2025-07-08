@@ -19,7 +19,8 @@ services:
     command: yarn start:prod
     restart: unless-stopped
     volumes:
-      - ./library:/usr/library
+      - /home/ezio/batcave/homeflix:/usr/library
+      - /home/ezio/bobarr/library/downloads:/downloads
     ports:
       - 4000:4000
 
@@ -42,41 +43,43 @@ services:
 
   redis:
     container_name: bobarr-redis
-    image: bitnami/redis:5.0.6
+    image: arm64v8/redis:latest
     env_file: .env
     restart: unless-stopped
     volumes:
-      - redis_data:/bitnami/redis/data
+      - /home/ezio/bobarr/packages/redis_data:/data
 
   jackett:
     image: linuxserver/jackett
     container_name: bobarr-jacket
+    init: false
     env_file: .env
     restart: unless-stopped
     volumes:
-      - ./packages/jackett/config:/config
-      - ./packages/jackett/downloads:/downloads
+      - /home/ezio/bobarr/packages/jackett/config:/config
+      - /home/ezio/bobarr/packages/jackett/downloads:/downloads
     ports:
       - 9117:9117
 
-  flaresolverr:
-    image: ghcr.io/flaresolverr/flaresolverr:latest
-    container_name: bobarr-flaresolverr
-    environment:
-      - LOG_LEVEL=info
-    restart: unless-stopped
-    ports:
-      - 8191:8191
+  # flaresolverr:
+  #   image: ghcr.io/flaresolverr/flaresolverr:latest
+  #   container_name: bobarr-flaresolverr
+  #   environment:
+  #     - LOG_LEVEL=info
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8191:8191
 
   transmission:
     image: linuxserver/transmission
     container_name: bobarr-transmission
+    init: false
     env_file: .env
     restart: unless-stopped
     volumes:
-      - ./library/downloads:/downloads
-      - ./packages/transmission/config:/config
-      - ./packages/transmission/watch:/watch
+      - /home/ezio/bobarr/library/downloads:/downloads
+      - /home/ezio/bobarr/packages/transmission/config:/config
+      - /home/ezio/bobarr/packages/transmission/watch:/watch
 
   transmission-web:
     image: dperson/nginx
